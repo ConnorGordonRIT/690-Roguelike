@@ -4,41 +4,46 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Roguelike {
     public class Game1 : Game {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        //  ~Game1 Variables
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
+        //  Constructor
         public Game1() {
-            _graphics = new GraphicsDeviceManager(this);
+            //  Part - ~Game1 Setup
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
 
+        //  MainMethod - Initialize
+        //  Process : Setup internal variables
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
+        //  MainMethod - Load Content
+        //  Process : Attach external files to internal variables
         protected override void LoadContent() {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
+        //  MainMethod - Update
+        //  Process : Handle Game1's logic
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
+        //  MainMethod - Draw
+        //  Process : Handle Game1's graphics
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
-
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
