@@ -17,13 +17,17 @@ namespace Roguelike {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.IsFullScreen = true;
         }
 
         //  MainMethod - Initialize
         //  Process : Setup internal variables
         protected override void Initialize() {
-            svrComms = new SvrComms();
-            svrComms.SetupContact("127.0.0.1", 8888);
+            //svrComms = new SvrComms();
+            //svrComms.SetupContact("127.0.0.1", 8888);
 
             base.Initialize();
         }
