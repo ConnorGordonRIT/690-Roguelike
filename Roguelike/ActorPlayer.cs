@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
 namespace Roguelike {
-    class Player {
-        //  ~Player Variables
-        private GameObject playerToken;
-
+    class ActorPlayer : GameActor {
         //  Ability Variables
         //  => Strength Variables
         private int playerStr_Score;
@@ -59,9 +56,8 @@ namespace Roguelike {
         private bool playerSkill_Perf;  //  Performance
         private bool playerSkill_Pers;  //  Persuasion
 
-        //  MainMethod - Draw (param Sprite Batch)
-        public void Draw(SpriteBatch pSBatch) {
-            playerToken.Draw(pSBatch);
-        }
+        //  Combat Variables
+        private int playerHealth_Base;
+        private int playerHealth_Curr;
     }
 }

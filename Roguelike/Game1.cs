@@ -8,8 +8,14 @@ namespace Roguelike {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        //  Map Variables
+        private GameMap map;
+
         //  Server Variables
-        SvrComms svrComms;
+        private SvrComms svrComms;
+
+        //  Texture Variables
+        private Texture2D mapTileImg;
 
         //  Constructor
         public Game1() {
@@ -36,6 +42,9 @@ namespace Roguelike {
         //  Process : Attach external files to internal variables
         protected override void LoadContent() {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            mapTileImg = Content.Load<Texture2D>("MT_TEMP");
+            map = new GameMap(mapTileImg);
         }
 
         //  MainMethod - Update
@@ -52,6 +61,8 @@ namespace Roguelike {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
+
+            map.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);
