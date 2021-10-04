@@ -17,8 +17,14 @@ namespace Roguelike {
         Rectangle textBox;
         Rectangle sendBtn;
 
+        //  Map Variables
+        private GameMap map;
+
         //  Server Variables
-        SvrComms svrComms;
+        private SvrComms svrComms;
+
+        //  Texture Variables
+        private Texture2D mapTileImg;
 
         //  Constructor
         public Game1() {
@@ -26,17 +32,21 @@ namespace Roguelike {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
             chatBox = new Rectangle(GraphicsDevice.Viewport.Width - 25, 0, GraphicsDevice.Viewport.Width / 8, GraphicsDevice.Viewport.Height);
             textBox = new Rectangle(chatBox.X, chatBox.Y, chatBox.Width, chatBox.Height - 10);
             sendBtn = new Rectangle(chatBox.X, chatBox.Height - 10, chatBox.Width, 10);
 
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.IsFullScreen = true;
         }
 
         //  MainMethod - Initialize
         //  Process : Setup internal variables
         protected override void Initialize() {
-            svrComms = new SvrComms();
-            svrComms.SetupContact("127.0.0.1", 8888);
+            //svrComms = new SvrComms();
+            //svrComms.SetupContact("127.0.0.1", 8888);
 
             base.Initialize();
         }
@@ -45,6 +55,9 @@ namespace Roguelike {
         //  Process : Attach external files to internal variables
         protected override void LoadContent() {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            mapTileImg = Content.Load<Texture2D>("MT_TEMP");
+            map = new GameMap(mapTileImg);
         }
 
         //  MainMethod - Update
@@ -61,6 +74,8 @@ namespace Roguelike {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
+
+            map.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);
