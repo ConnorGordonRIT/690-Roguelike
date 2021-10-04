@@ -3,10 +3,19 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Roguelike {
+    
     public class Game1 : Game {
         //  ~Game1 Variables
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+
+        //Server chatbox
+        private Rectangle chatBox;
+        string text = "";
+        int cursorPos = 0;
+        SpriteFont font;
+        Rectangle textBox;
+        Rectangle sendBtn;
 
         //  Server Variables
         SvrComms svrComms;
@@ -17,6 +26,10 @@ namespace Roguelike {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            chatBox = new Rectangle(GraphicsDevice.Viewport.Width - 25, 0, GraphicsDevice.Viewport.Width / 8, GraphicsDevice.Viewport.Height);
+            textBox = new Rectangle(chatBox.X, chatBox.Y, chatBox.Width, chatBox.Height - 10);
+            sendBtn = new Rectangle(chatBox.X, chatBox.Height - 10, chatBox.Width, 10);
+
         }
 
         //  MainMethod - Initialize
@@ -51,6 +64,18 @@ namespace Roguelike {
 
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        public void CharEntered(char c)
+        {
+            string newText = text.Insert(cursorPos, c.ToString()); //Insert the char
+
+            //Check if the text width is shorter than the back rectangle
+            if (font.MeasureString(newText).X < textBox.Width)
+            {
+                text = newText; //Set the text
+                cursorPos++; //Move the text cursor
+            }
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Roguelike
         //Player fields
         private int level;
         private GameObject token;
-
+        private List<GameObject> inventory;
     }
 }
