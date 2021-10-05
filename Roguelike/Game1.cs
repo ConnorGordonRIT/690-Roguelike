@@ -9,14 +9,6 @@ namespace Roguelike {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        //Server chatbox
-        private Rectangle chatBox;
-        string text = "";
-        int cursorPos = 0;
-        SpriteFont font;
-        Rectangle textBox;
-        Rectangle sendBtn;
-
         //  Map Variables
         private GameMap map;
 
@@ -32,10 +24,6 @@ namespace Roguelike {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-            chatBox = new Rectangle(GraphicsDevice.Viewport.Width - 25, 0, GraphicsDevice.Viewport.Width / 8, GraphicsDevice.Viewport.Height);
-            textBox = new Rectangle(chatBox.X, chatBox.Y, chatBox.Width, chatBox.Height - 10);
-            sendBtn = new Rectangle(chatBox.X, chatBox.Height - 10, chatBox.Width, 10);
 
             graphics.PreferredBackBufferHeight = 1080;
             graphics.PreferredBackBufferWidth = 1920;
@@ -79,18 +67,6 @@ namespace Roguelike {
 
             spriteBatch.End();
             base.Draw(gameTime);
-        }
-
-        public void CharEntered(char c)
-        {
-            string newText = text.Insert(cursorPos, c.ToString()); //Insert the char
-
-            //Check if the text width is shorter than the back rectangle
-            if (font.MeasureString(newText).X < textBox.Width)
-            {
-                text = newText; //Set the text
-                cursorPos++; //Move the text cursor
-            }
         }
     }
 }
