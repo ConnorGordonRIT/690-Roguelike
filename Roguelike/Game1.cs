@@ -9,14 +9,22 @@ namespace Roguelike {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        //  Input Variables
+        private MouseState mouseStateCurr;
+        private MouseState mouseStatePrev;
+
         //  Map Variables
         private GameMap map;
+
+        //  Player Variables
+        private ActorPlayer player;
 
         //  Server Variables
         private SvrComms svrComms;
 
         //  Texture Variables
         private Texture2D mapTileImg;
+        private Texture2D playerImg;
 
         //  Constructor
         public Game1() {
@@ -46,6 +54,10 @@ namespace Roguelike {
 
             mapTileImg = Content.Load<Texture2D>("MT_TEMP");
             map = new GameMap(mapTileImg);
+
+            playerImg = Content.Load<Texture2D>("MT_TEMP");
+            GameObject tempToken = new GameObject(playerImg, new Rectangle(0, 0, 60, 60), new Rectangle(0, 0, 60, 60));
+            player = new ActorPlayer(tempToken);
         }
 
         //  MainMethod - Update
@@ -53,6 +65,12 @@ namespace Roguelike {
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            mouseStateCurr = Mouse.GetState();
+
+            player.Update(mouseStateCurr, mouseStatePrev);
+
+            mouseStatePrev = Mouse.GetState();
 
             base.Update(gameTime);
         }
@@ -64,6 +82,7 @@ namespace Roguelike {
             spriteBatch.Begin();
 
             //map.Draw(spriteBatch);
+            player.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);

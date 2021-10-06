@@ -1,6 +1,13 @@
-﻿namespace Roguelike {
+﻿using Microsoft.Xna.Framework.Graphics;
+
+namespace Roguelike {
     class GameActor {
         //  Token Variables
-        private GameObject actorToken;
+        protected GameObject actorToken;
+
+        //  Constructor
+        public GameActor(GameObject pToken) {
+            actorToken = pToken;
+        }
     }
 }

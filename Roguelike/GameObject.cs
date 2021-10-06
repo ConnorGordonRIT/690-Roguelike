@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Roguelike {
     class GameObject {
         //  Area Variables
-        private Vector2 objPos;
+        public Vector2 objPos;
         private Point objSize;
-        protected Rectangle ObjArea => new Rectangle(objPos.ToPoint(), objSize);
+        public Rectangle ObjArea => new Rectangle(objPos.ToPoint(), objSize);
 
         //  Image Variables
         private Texture2D objImage;

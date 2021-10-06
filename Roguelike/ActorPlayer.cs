@@ -1,63 +1,70 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Roguelike {
     class ActorPlayer : GameActor {
-        //  Ability Variables
-        //  => Strength Variables
-        private int playerStr_Score;
-        private int playerStr_Mod;
-        private bool playerSave_Str;
+        //  Token Variables
+        private bool tokenSelected;
+        private Point tokenOffset;
 
-        private bool playerSkill_Ath;   //  Athletics
+        //  Constructor
+        public ActorPlayer(GameObject pToken) : base(pToken) {
 
-        //  => Dexterity Variables
-        private int playerDex_Score;
-        private int playerDex_Mod;
-        private bool playerSave_Dex;
+        }
 
-        private bool playerSkill_Acr;   //  Acrobatics
-        private bool playerSkill_SoH;   //  Sleight of Hand
-        private bool playerSkill_Snk;   //  Stealth (Sneak)
+        //  MainMethod - Update
+        public void Update(MouseState pMSCurr, MouseState pMSPrev) {
+            InputControl(pMSCurr, pMSPrev);
+            TokenControl(pMSCurr.Position);
+        }
 
-        //  => Constitution Variables
-        private int playerCon_Score;
-        private int playerCon_Mod;
-        private bool playerSave_Con;
+        //  SubMethod of Update - Input Control
+        private void InputControl(MouseState pMSCurr, MouseState pMSPrev) {
+            if (pMSPrev.LeftButton == ButtonState.Pressed && pMSCurr.LeftButton == ButtonState.Released) {
+                LClickControl(pMSCurr.Position);
+            }
+        }
 
-        //  => Intelligence Variables
-        private int playerInt_Score;
-        private int playerInt_Mod;
-        private bool playerSave_Int;
+        //  SubMethod of InputControl - Left Click Control
+        private void LClickControl(Point pMPos) {
+            //  Part - Player Left Clicks their token
+            if (actorToken.ObjArea.Contains(pMPos)) {
+                tokenSelected = !tokenSelected;
 
-        private bool playerSkill_Arc;   //  Arcana
-        private bool playerSkill_His;   //  History
-        private bool playerSkill_Inv;   //  Investigation
-        private bool playerSkill_Nat;   //  Nature
-        private bool playerSkill_Rel;   //  Religion
+                //  SubPart - Get offset from mouse and token
+                if (tokenSelected == true) {
+                    tokenOffset = new Point(pMPos.X - actorToken.ObjArea.X, pMPos.Y - actorToken.ObjArea.Y);
+                }
 
-        //  => Wisdom Variables
-        private int playerWis_Score;
-        private int playerWis_Mod;
-        private bool playerSave_Wis;
+                //  SubPart - Snap to grid
+                else if (tokenSelected == false) {
+                    Vector2 actPos = new Vector2(actorToken.objPos.X / 60, actorToken.objPos.Y / 60);
+                    Point actFin = actPos.ToPoint();
+                    
+                    if ((actPos.X - actPos.ToPoint().X) > 0.5f) {
+                        actFin.X++;
+                    }
 
-        private bool playerSkill_Ani;   //  Animal Handling
-        private bool playerSkill_Ins;   //  Insight
-        private bool playerSkill_Med;   //  Medicine
-        private bool playerSkill_Per;   //  Persuasion
-        private bool playerSkill_Sur;   //  Survival
+                    if ((actPos.Y - actPos.ToPoint().Y) > 0.5f) {
+                        actFin.Y++;
+                    }
 
-        //  => Charisma Variables
-        private int playerCha_Score;
-        private int playerCha_Mod;
-        private bool playerSave_Cha;
+                    actorToken.objPos = new Vector2(actFin.X * 60, actFin.Y * 60);
+                }
+            }
+        }
 
-        private bool playerSkill_Dec;   //  Deception
-        private bool playerSkill_Int;   //  Intimidation
-        private bool playerSkill_Perf;  //  Performance
-        private bool playerSkill_Pers;  //  Persuasion
+        //  SubMethod of Update - Token Control
+        private void TokenControl(Point pMPos) {
+            if (tokenSelected == true) {
+                actorToken.objPos = new Vector2(pMPos.X - tokenOffset.X, pMPos.Y - tokenOffset.Y);
+            }
+        }
 
-        //  Combat Variables
-        private int playerHealth_Base;
-        private int playerHealth_Curr;
+        //  MainMethod - Draw
+        public void Draw(SpriteBatch pSBatch) {
+            actorToken.Draw(pSBatch);
+        }
     }
 }
