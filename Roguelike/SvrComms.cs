@@ -15,8 +15,9 @@ namespace Roguelike {
         private Socket svrListen;
 
         //  Server Data Variables
-        private string data = null;
-        private byte[] bytes = new byte[1024];
+        private bool dataRead;
+        private string dataRaw;
+        private byte[] dataBytes;
         private string[] svrArr;
 
         //  String Variables
@@ -38,55 +39,37 @@ namespace Roguelike {
 
         //  SubMethod of SetupContact - FirstContact
         private void FirstContact() {
-            try {
-                svrListen.Connect(svrEndPoint);
+            svrListen.Connect(svrEndPoint);
 
-                //  Part - Get Client IP
-                IPHostEntry clientEntry = Dns.GetHostEntry(System.Environment.MachineName);
-                IPAddress clientIP = null;
+            //  Part - Transmit First Contact Message
+            dataRaw = "FC" + sStr + eStr;
+            dataBytes = Encoding.ASCII.GetBytes(dataRaw);
+            svrListen.Send(dataBytes);
 
-                foreach (IPAddress IP in clientEntry.AddressList) {
-                    if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
-                        clientIP = IP;
-                    }
+            //  Part - Recieve First Contact Response
+            dataRaw = "";
+
+            //  Part - Read Data
+            dataRead = false;
+            while (dataRead == false) {
+                int bytesRec = svrListen.Receive(dataBytes);
+                dataRaw += Encoding.ASCII.GetString(dataBytes, 0, bytesRec);
+                if (dataRaw.IndexOf(eStr) > -1) {
+                    dataRead = true;
                 }
-
-                //  Part - Transmit First Contact Message
-                data = "FC" + sStr + clientIP.ToString() + sStr + eStr;
-                bytes = Encoding.ASCII.GetBytes(data);
-
-                svrListen.Send(bytes);
-
-                //  Part - Recieve First Contact Response
-                data = null;
-
-                bool first = true;
-                while (first == true) {
-                    int svrRecive = svrListen.Receive(bytes);
-                    data += Encoding.ASCII.GetString(bytes, 0, svrRecive);
-                    if (data.IndexOf(eStr) > -1) {
-                        first = false;
-                    }
-                }
-
-                //  SubPart - Handle PlayerTag Assignment
-                svrArr = data.Split(sStr);
-                if (svrArr[0] == "PT") {
-                    playerTag = svrArr[1];
-                }
-
-                svrListen.Shutdown(SocketShutdown.Both);
-                svrListen.Close();
             }
-            catch (ArgumentNullException ae) {
-                Console.WriteLine("ArgumentNullException : {0}", ae.ToString());
+
+            //  SubPart - Handle PlayerTag Assignment
+            svrArr = dataRaw.Split(sStr);
+            if (svrArr[0] == "PT") {
+                playerTag = svrArr[1];
             }
-            catch (SocketException se) {
-                Console.WriteLine("SocketException : {0}", se.ToString());
-            }
-            catch (Exception e) {
-                Console.WriteLine("Unexpected exception : {0}", e.ToString());
-            }
+
+            svrListen.Shutdown(SocketShutdown.Both);
+            svrListen.Close();
         }
+
+        //  MainMethod - Server Send
+        public void ServerSend()
     }
 }
