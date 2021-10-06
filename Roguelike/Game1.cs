@@ -41,8 +41,8 @@ namespace Roguelike {
         //  MainMethod - Initialize
         //  Process : Setup internal variables
         protected override void Initialize() {
-            //svrComms = new SvrComms();
-            //svrComms.SetupContact("127.0.0.1", 8888);
+            svrComms = new SvrComms();
+            svrComms.SetupContact("127.0.0.1", 8888);
 
             base.Initialize();
         }

@@ -25,3 +25,10 @@
 /processorParam:TextureFormat=Color
 /build:MT_TEMP.png
 
+#begin TB_FontA.spritefont
+/importer:FontDescriptionImporter
+/processor:LocalizedFontProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:TB_FontA.spritefont
+
