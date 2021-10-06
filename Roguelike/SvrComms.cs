@@ -13,15 +13,15 @@ namespace Roguelike {
         private IPEndPoint svrEndPoint;
 
         private Socket svrListen;
-        private Socket svrHandle;
 
         //  Server Data Variables
-        private string svrData = null;
-        private byte[] svrBytes = new byte[1024];
+        private string data = null;
+        private byte[] bytes = new byte[1024];
         private string[] svrArr;
 
-        private string playerData = null;
-        private byte[] playerBytes = new byte[1024];
+        //  String Variables
+        private string sStr = ",,";
+        private string eStr = "<C>";
 
         //  MainMethod - Setup Contact (param IP, Port)
         public void SetupContact(string pIp, int pPort) {
@@ -29,11 +29,8 @@ namespace Roguelike {
             svrAddress = IPAddress.Parse(pIp);
             svrEndPoint = new IPEndPoint(svrAddress, pPort);
 
-            //  Part - Setup Listen and Handle Sockets
-            svrListen = new Socket(svrAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            svrListen.Bind(svrEndPoint);
-            svrListen.Listen(10);
-            svrHandle = svrListen.Accept();
+            //  Part - Setup Listen Socket
+            svrListen = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             //  Part - First Contact
             FirstContact();
@@ -41,36 +38,54 @@ namespace Roguelike {
 
         //  SubMethod of SetupContact - FirstContact
         private void FirstContact() {
-            //  Part - Get Client IP
-            IPHostEntry clientEntry = Dns.GetHostEntry(System.Environment.MachineName);
-            IPAddress clientIP = null;
-            foreach (IPAddress IP in clientEntry.AddressList) {
-                if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
-                    clientIP = IP;
+            try {
+                svrListen.Connect(svrEndPoint);
+
+                //  Part - Get Client IP
+                IPHostEntry clientEntry = Dns.GetHostEntry(System.Environment.MachineName);
+                IPAddress clientIP = null;
+
+                foreach (IPAddress IP in clientEntry.AddressList) {
+                    if (IP.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
+                        clientIP = IP;
+                    }
                 }
-            }
 
-            //  Part - Transmit First Contact Message
-            playerData = clientIP.ToString() + ",,FC,,<C>";
-            Console.WriteLine("Player Data : " + playerData);
+                //  Part - Transmit First Contact Message
+                data = "FC" + sStr + clientIP.ToString() + sStr + eStr;
+                bytes = Encoding.ASCII.GetBytes(data);
 
-            playerBytes = Encoding.ASCII.GetBytes(playerData);
-            svrHandle.Send(playerBytes);
+                svrListen.Send(bytes);
 
-            //  Part - Recieve First Contact Response
-            while (true) {
-                int svrRecive = svrHandle.Receive(svrBytes);
-                svrData += Encoding.ASCII.GetString(svrBytes, 0, svrRecive);
-                if (svrData.IndexOf("<C>") > -1) {
-                    break;
+                //  Part - Recieve First Contact Response
+                data = null;
+
+                bool first = true;
+                while (first == true) {
+                    int svrRecive = svrListen.Receive(bytes);
+                    data += Encoding.ASCII.GetString(bytes, 0, svrRecive);
+                    if (data.IndexOf(eStr) > -1) {
+                        first = false;
+                    }
                 }
 
                 //  SubPart - Handle PlayerTag Assignment
-                svrArr = svrData.Split(",,");
+                svrArr = data.Split(sStr);
                 if (svrArr[0] == "PT") {
                     playerTag = svrArr[1];
-                    Console.WriteLine("Player Tag  : " + playerTag);
                 }
+
+                svrListen.Shutdown(SocketShutdown.Both);
+                svrListen.Close();
+            }
+            catch (ArgumentNullException ae) {
+                Console.WriteLine("ArgumentNullException : {0}", ae.ToString());
+            }
+            catch (SocketException se) {
+                Console.WriteLine("SocketException : {0}", se.ToString());
+            }
+            catch (Exception e) {
+                Console.WriteLine("Unexpected exception : {0}", e.ToString());
             }
         }
     }

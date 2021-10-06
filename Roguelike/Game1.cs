@@ -63,7 +63,7 @@ namespace Roguelike {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
 
-            map.Draw(spriteBatch);
+            //map.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);

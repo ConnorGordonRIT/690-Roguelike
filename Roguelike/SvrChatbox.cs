@@ -25,7 +25,7 @@ namespace Roguelike {
 
         public string Post(string input)
         {
-
+            return "";
         }
     }
 }
